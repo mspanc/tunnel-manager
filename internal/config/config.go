@@ -6,7 +6,6 @@ import (
 	"os"
 	"strconv"
 	"time"
-	"tunnel/internal/slogf"
 )
 
 const (
@@ -77,13 +76,12 @@ func LoadConfig() (*Config, error) {
 }
 
 func (c *Config) Print(logger *slog.Logger) {
-	logger.Info("Config:")
-	slogf.Infof("- CloudFlare Account ID: %s\n", c.CloudFlareAccountID)
-	slogf.Infof("- CloudFlare Tunnel ID: %s\n", c.CloudFlareTunnelID)
-	slogf.Infof("- service domain label key: %s\n", c.ServiceHostnamesAnnotation)
-	slogf.Infof("- service upstream port label key: %s\n", c.ServiceUpstreamPortAnnotation)
-	slogf.Infof("- sync interval: %s\n", c.SyncInterval)
-	slogf.Infof("- log level: %s\n", c.LogLevel.String())
+	logger.Info("config", slog.String("key", "CloudFlare Account ID"), slog.String("value", c.CloudFlareAccountID))
+	logger.Info("config", slog.String("key", "CloudFlare Tunnel ID"), slog.String("value", c.CloudFlareTunnelID))
+	logger.Info("config", slog.String("key", "service domain label key"), slog.String("value", c.ServiceHostnamesAnnotation))
+	logger.Info("config", slog.String("key", "service upstream port label key"), slog.String("value", c.ServiceUpstreamPortAnnotation))
+	logger.Info("config", slog.String("key", "sync interval"), slog.String("value", c.SyncInterval.String()))
+	logger.Info("config", slog.String("key", "log level"), slog.String("value", c.LogLevel.String()))
 }
 
 func parseSyncInterval() (time.Duration, error) {
