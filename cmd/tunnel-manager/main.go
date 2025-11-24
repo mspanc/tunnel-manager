@@ -53,10 +53,15 @@ func main() {
 		case <-time.After(config.SyncInterval):
 			logger.Info("sync start")
 			if state, err := sync.SyncKube(runtime); err != nil {
-				logger.Warn("sync failed", slog.String("error", err.Error()))
+				logger.Warn("kubernetes sync failed", slog.String("error", err.Error()))
 			} else {
 				state.Print(runtime.Logger)
-				sync.SyncTunnel(runtime, state)
+				if err := sync.SyncTunnel(runtime, state); err != nil {
+					logger.Warn("tunnel sync failed", slog.String("error", err.Error()))
+				}
+				if err := sync.SyncDNS(runtime, state); err != nil {
+					logger.Warn("dns sync failed", slog.String("error", err.Error()))
+				}
 			}
 			logger.Info("sync stop")
 		}

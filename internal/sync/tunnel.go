@@ -6,15 +6,15 @@ import (
 	"tunnel/internal/runtime"
 )
 
-type TunnelConfigRequest struct {
-	Config TunnelConfig `json:"config"`
+type tunnelConfigRequest struct {
+	Config tunnelConfig `json:"config"`
 }
 
-type TunnelConfig struct {
-	Ingress []TunnelIngressRule `json:"ingress"`
+type tunnelConfig struct {
+	Ingress []tunnelIngressRule `json:"ingress"`
 }
 
-type TunnelIngressRule struct {
+type tunnelIngressRule struct {
 	Hostname      string         `json:"hostname,omitempty"`
 	Service       string         `json:"service"`
 	OriginRequest map[string]any `json:"originRequest,omitempty"`
@@ -22,10 +22,10 @@ type TunnelIngressRule struct {
 
 // SyncTunnel updates the Cloudflare Tunnel configuration to match the desired state.
 func SyncTunnel(runtime *runtime.Runtime, state *SyncState) error {
-	ingressRules := make([]TunnelIngressRule, 0)
+	ingressRules := make([]tunnelIngressRule, 0)
 
 	for host, service := range state.HostToService {
-		ingressRules = append(ingressRules, TunnelIngressRule{
+		ingressRules = append(ingressRules, tunnelIngressRule{
 			Hostname: host,
 			Service:  service,
 		})
@@ -37,20 +37,20 @@ func SyncTunnel(runtime *runtime.Runtime, state *SyncState) error {
 		return ingressRules[i].Hostname < ingressRules[j].Hostname
 	})
 
-	ingressRules = append(ingressRules, TunnelIngressRule{
+	ingressRules = append(ingressRules, tunnelIngressRule{
 		Service: "http_status:404",
 	})
 
-	reqBody := TunnelConfigRequest{
-		Config: TunnelConfig{
+	reqBody := tunnelConfigRequest{
+		Config: tunnelConfig{
 			Ingress: ingressRules,
 		},
 	}
 
-	var cfResp map[string]any
+	var resp map[string]any
 	path := fmt.Sprintf("/accounts/%s/cfd_tunnel/%s/configurations", runtime.Config.CloudFlareAccountID, runtime.Config.CloudFlareTunnelID)
 
-	if err := runtime.Client.CloudFlareClient.Put(runtime.Ctx, path, reqBody, &cfResp); err != nil {
+	if err := runtime.Client.CloudFlareClient.Put(runtime.Ctx, path, reqBody, &resp); err != nil {
 		return fmt.Errorf("error while updating tunnel configuration: %w", err)
 	}
 

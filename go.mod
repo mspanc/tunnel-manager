@@ -3,7 +3,7 @@ module tunnel
 go 1.25.0
 
 require (
-	github.com/cloudflare/cloudflare-go/v4 v4.6.0
+	github.com/cloudflare/cloudflare-go/v6 v6.3.0
 	k8s.io/api v0.34.2
 	k8s.io/apimachinery v0.34.2
 	k8s.io/client-go v0.34.2

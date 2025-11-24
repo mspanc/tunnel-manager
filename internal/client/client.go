@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"tunnel/internal/config"
 
-	"github.com/cloudflare/cloudflare-go/v4"
-	"github.com/cloudflare/cloudflare-go/v4/option"
+	"github.com/cloudflare/cloudflare-go/v6"
+	"github.com/cloudflare/cloudflare-go/v6/option"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
